@@ -8,40 +8,73 @@ typedef struct {
     int top;
 } Stack;
 
-// 스택 초기화
 void init(Stack *s) {
     s->top = -1;
 }
 
-// 스택이 비었는지 확인
 int is_empty(Stack *s) {
     return s->top == -1;
 }
 
-// 스택이 가득 찼는지 확인
 int is_full(Stack *s) {
     return s->top == MAX_SIZE - 1;
 }
 
-// 스택에 값 추가 (push)
 void push(Stack *s, int value) {
     if (!is_full(s)) {
         s->data[++(s->top)] = value;
     }
 }
 
-// 스택에서 값 제거 (pop)
 int pop(Stack *s) {
     if (!is_empty(s)) {
         return s->data[(s->top)--];
     }
-    return -1; // 오류: 스택이 비어있음
+    return -1; 
 }
 
-// 스택의 top 값 확인 (peek)
 int peek(Stack *s) {
     if (!is_empty(s)) {
         return s->data[s->top];
     }
-    return -1; // 오류: 스택이 비어있음
+    return -1; 
+}
+
+int main() {
+    Stack arr;
+    init(&arr);
+
+    int N;
+    scanf("%d", &N);
+
+    int* seq = (int*)malloc(sizeof(int) * N);
+    for (int i = 0; i < N; i++) scanf("%d", &seq[i]);
+
+    char** output = (char**)malloc(sizeof(char*) * MAX_SIZE * 2);
+    int out_idx = 0;
+
+    int current = 1;
+    for (int i = 0; i < N; i++) {
+        int target = seq[i];
+        while (current <= target) {
+            push(&arr, current++);
+            output[out_idx++] = "+\n";
+        }
+        if (peek(&arr) == target) {
+            pop(&arr);
+            output[out_idx++] = "-\n";
+        } else {
+            printf("NO\n");
+            free(seq);
+            free(output);
+            return 0;
+        }
+    }
+
+    for (int i = 0; i < out_idx; i++)
+        printf("%s", output[i]);
+
+    free(seq);
+    free(output);
+    return 0;
 }
